@@ -1,0 +1,29 @@
+FROM python:3.11-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    pkg-config \
+    libssl-dev \
+    protobuf-compiler \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sSf https://sh.rustup.rs | sh -s -- -y && \
+    ln -s /root/.cargo/bin/* /usr/local/bin/
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    mv /root/.local/bin/uv /usr/local/bin/uv && \
+    mv /root/.local/bin/uvx /usr/local/bin/uvx
+
+RUN cargo install watchexec-cli
+
+WORKDIR /workspace
+
+COPY blueprints/simple-workflow/scripts/run-dev.sh /usr/local/bin/run-blueprint-dev.sh
+RUN chmod +x /usr/local/bin/run-blueprint-dev.sh
+
+CMD ["/usr/local/bin/run-blueprint-dev.sh"]

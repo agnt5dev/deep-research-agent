@@ -1,0 +1,15 @@
+name: deep-research-agent
+description: Deep Reserach Agent
+language: python
+language_version: "3.11"
+environment: development
+deploy:
+  dockerfile: ./Dockerfile
+  ignore_file: .agnt5ignore
+  build_args: {}
+  registry:
+    url: docker.io
+  resources:
+    memory: 256Mi
+    cpu: 250m
+variables: {}
